@@ -14,9 +14,9 @@ export default function RightMenu({ user }: { user?: User }) {
                     <Suspense fallback="loading...">
                         <UserInfoCard user={user} />
                     </Suspense>
-                    {/* <Suspense fallback="loading...">
-            <UserMediaCard user={user} />
-          </Suspense> */}
+                    <Suspense fallback="loading...">
+                        <UserMediaCard user={user} />
+                    </Suspense>
                 </>
             ) : null}
             <FriendRequests />
