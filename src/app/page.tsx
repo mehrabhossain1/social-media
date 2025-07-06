@@ -1,4 +1,5 @@
 import AddPost from "@/components/AddPost";
+import ProfileCard from "@/components/leftMenu/ProfileCard";
 
 export default function Home() {
     return (
@@ -6,6 +7,7 @@ export default function Home() {
             <div className="hidden xl:block w-[20%]">
                 {/* <LeftMenu type="home" /> */}
                 <h2>Home</h2>
+                <ProfileCard />
             </div>
             <div className="w-full lg:w-[70%] xl:w-[50%]">
                 <div className="flex flex-col gap-6">
