@@ -15,6 +15,7 @@ datasource db {
 
 model User {
   id                     String          @id @default(auto()) @map("_id") @db.ObjectId
+  clerkId                String          @unique   
   username               String          @unique
   avatar                 String?
   cover                  String?
