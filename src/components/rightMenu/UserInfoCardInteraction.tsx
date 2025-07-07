@@ -1,3 +1,5 @@
+//@typescript-eslint/no-unused-vars
+
 "use client";
 
 import { switchBlock, switchFollow } from "@/lib/actions";

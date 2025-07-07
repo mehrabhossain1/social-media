@@ -1,7 +1,7 @@
+// @typescript-eslint/no-unused-vars
 "use client";
 
 import { switchLike } from "@/lib/actions";
-import { useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import { useOptimistic, useState } from "react";
 
@@ -16,7 +16,6 @@ export default function PostInteraction({
     commentNumber: number;
     currentUserId: string;
 }) {
-    const { isLoaded, userId } = useAuth();
     const [likeState, setLikeState] = useState({
         likeCount: likes.length,
         isLiked: likes.includes(currentUserId),

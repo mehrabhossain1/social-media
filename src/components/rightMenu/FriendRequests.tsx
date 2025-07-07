@@ -1,3 +1,5 @@
+// @typescript-eslint/no-unused-vars
+
 import Link from "next/link";
 import FriendRequestList from "./FriendRequestList";
 import { auth } from "@clerk/nextjs/server";

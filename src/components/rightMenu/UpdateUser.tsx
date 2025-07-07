@@ -1,3 +1,6 @@
+// @typescript-eslint/no-explicit-any
+// @typescript-eslint/no-unused-expressions
+
 "use client";
 import { CldUploadWidget } from "next-cloudinary";
 
