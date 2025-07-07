@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import Feed from "@/components/feed/Feed";
 import LeftMenu from "@/components/leftMenu/LeftMenu";
 import RightMenu from "@/components/rightMenu/RightMenu";
@@ -8,11 +6,9 @@ import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-export default async function ProfilePage({
-    params,
-}: {
-    params: { username: string };
-}) {
+type ProfilePageParams = { params: { username: string } };
+
+export default async function ProfilePage({ params }: ProfilePageParams) {
     const username = params.username;
 
     const user = await prisma.user.findFirst({
