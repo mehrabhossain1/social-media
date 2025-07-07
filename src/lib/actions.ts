@@ -114,3 +114,79 @@ export const switchBlock = async (userId: string) => {
         throw new Error("Something went wrong!");
     }
 };
+
+// Accept a follow request
+export const acceptFollowRequest = async (clerkSenderId: string) => {
+    const { userId: clerkReceiverId } = await auth();
+    if (!clerkReceiverId) throw new Error("User is not authenticated!");
+
+    // Get both users from database
+    const [receiver, sender] = await Promise.all([
+        prisma.user.findUnique({ where: { clerkId: clerkReceiverId } }),
+        prisma.user.findUnique({ where: { clerkId: clerkSenderId } }),
+    ]);
+
+    if (!receiver || !sender) {
+        console.log("Receiver:", receiver);
+        console.log("Sender:", sender);
+        throw new Error("User(s) not found!");
+    }
+
+    try {
+        // Check for existing request
+        const existingFollowRequest = await prisma.followRequest.findFirst({
+            where: {
+                senderId: sender.id,
+                receiverId: receiver.id,
+            },
+        });
+
+        if (existingFollowRequest) {
+            await prisma.followRequest.delete({
+                where: { id: existingFollowRequest.id },
+            });
+
+            // Create actual follower relationship
+            await prisma.follower.create({
+                data: {
+                    followerId: sender.id,
+                    followingId: receiver.id,
+                },
+            });
+        }
+    } catch (err) {
+        console.error("[ACCEPT_FOLLOW_REQUEST_ERROR]", err);
+        throw new Error("Something went wrong while accepting request!");
+    }
+};
+
+// Decline a follow request
+export const declineFollowRequest = async (clerkSenderId: string) => {
+    const { userId: clerkReceiverId } = await auth();
+    if (!clerkReceiverId) throw new Error("User is not authenticated!");
+
+    const [receiver, sender] = await Promise.all([
+        prisma.user.findUnique({ where: { clerkId: clerkReceiverId } }),
+        prisma.user.findUnique({ where: { clerkId: clerkSenderId } }),
+    ]);
+
+    if (!receiver || !sender) throw new Error("User(s) not found!");
+
+    try {
+        const existingFollowRequest = await prisma.followRequest.findFirst({
+            where: {
+                senderId: sender.id,
+                receiverId: receiver.id,
+            },
+        });
+
+        if (existingFollowRequest) {
+            await prisma.followRequest.delete({
+                where: { id: existingFollowRequest.id },
+            });
+        }
+    } catch (err) {
+        console.error("[DECLINE_FOLLOW_REQUEST_ERROR]", err);
+        throw new Error("Something went wrong while declining request!");
+    }
+};
