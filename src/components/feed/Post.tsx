@@ -13,6 +13,7 @@ type FeedPostType = PostType & { user: User } & {
     _count: { comments: number };
 };
 
+//
 export default async function Post({ post }: { post: FeedPostType }) {
     const { userId: clerkUserId } = await auth();
 
