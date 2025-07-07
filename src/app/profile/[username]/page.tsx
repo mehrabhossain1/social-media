@@ -6,8 +6,9 @@ import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-type ProfilePageParams = { params: { username: string } };
-
+interface ProfilePageParams {
+    params: { username: string }; // 'params' should be a plain object, not a Promise
+}
 export default async function ProfilePage({ params }: ProfilePageParams) {
     const username = params.username;
 
