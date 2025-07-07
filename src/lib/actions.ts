@@ -240,3 +240,42 @@ export const updateProfile = async (
         return { success: false, error: true };
     }
 };
+
+export const switchLike = async (postId: string) => {
+    const { userId: clerkUserId } = await auth();
+
+    if (!clerkUserId) throw new Error("User is not authenticated!");
+
+    const currentUser = await prisma.user.findUnique({
+        where: { clerkId: clerkUserId },
+    });
+
+    if (!currentUser) throw new Error("User not found in database!");
+
+    try {
+        const existingLike = await prisma.like.findFirst({
+            where: {
+                postId,
+                userId: currentUser.id,
+            },
+        });
+
+        if (existingLike) {
+            await prisma.like.delete({
+                where: {
+                    id: existingLike.id,
+                },
+            });
+        } else {
+            await prisma.like.create({
+                data: {
+                    postId,
+                    userId: currentUser.id,
+                },
+            });
+        }
+    } catch (err) {
+        console.error(err);
+        throw new Error("Something went wrong while toggling like.");
+    }
+};
