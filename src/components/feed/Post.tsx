@@ -5,7 +5,7 @@ import Comments from "./Comments";
 import PostInfo from "./PostInfo";
 import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/client";
-import { Post as PostType, User } from "@prisma/client";
+import type { Post as PostType, User } from "@prisma/client";
 
 type FeedPostType = PostType & { user: User } & {
     likes: [{ userId: string }];
