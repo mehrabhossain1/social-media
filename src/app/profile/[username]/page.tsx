@@ -6,11 +6,15 @@ import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-export default async function ProfilePage({
-    params,
-}: {
-    params: { username: string };
-}) {
+import { type Metadata } from "next";
+
+interface PageProps {
+    params: {
+        username: string;
+    };
+}
+
+export default async function ProfilePage({ params }: PageProps) {
     const username = params.username;
 
     const user = await prisma.user.findFirst({
