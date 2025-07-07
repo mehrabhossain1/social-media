@@ -1,4 +1,4 @@
-// @typescript-eslint/no-explicit-any
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import prisma from "@/lib/client";
 import { auth } from "@clerk/nextjs/server";
