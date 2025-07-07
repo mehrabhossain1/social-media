@@ -50,7 +50,9 @@ export default async function Feed({ username }: { username?: string }) {
             },
         });
 
-        const followingIds = following.map((f) => f.followingId);
+        const followingIds = following.map(
+            (f: { followingId: string }) => f.followingId
+        );
         const ids = [currentUser.id, ...followingIds];
 
         posts = await prisma.post.findMany({
