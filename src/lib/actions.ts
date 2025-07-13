@@ -399,3 +399,39 @@ export const addStory = async (img: string) => {
         throw new Error("Failed to add story");
     }
 };
+
+export const deletePost = async (postId: string) => {
+    const { userId: clerkUserId } = await auth();
+
+    if (!clerkUserId) throw new Error("User is not authenticated!");
+
+    const currentUser = await prisma.user.findUnique({
+        where: {
+            clerkId: clerkUserId,
+        },
+    });
+
+    if (!currentUser) throw new Error("User not found in database!");
+
+    try {
+        // Ensure the post belongs to the current user before deleting
+        const post = await prisma.post.findUnique({
+            where: { id: postId },
+        });
+
+        if (post?.userId !== currentUser.id) {
+            throw new Error("You are not authorized to delete this post!");
+        }
+
+        await prisma.post.delete({
+            where: {
+                id: postId,
+            },
+        });
+
+        revalidatePath("/");
+    } catch (err) {
+        console.error("[DELETE_POST_ERROR]", err);
+        throw new Error("Failed to delete post.");
+    }
+};
