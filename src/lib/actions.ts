@@ -350,3 +350,52 @@ export const addPost = async (formData: FormData, img: string) => {
         console.error("[ADD_POST_ERROR]", err);
     }
 };
+
+export const addStory = async (img: string) => {
+    const { userId: clerkUserId } = await auth();
+
+    if (!clerkUserId) throw new Error("User is not authenticated!");
+
+    // ✅ Clerk ID দিয়ে MongoDB User খোঁজা
+    const currentUser = await prisma.user.findUnique({
+        where: {
+            clerkId: clerkUserId,
+        },
+    });
+
+    if (!currentUser) throw new Error("User not found in database!");
+
+    try {
+        // ✅ আগের স্টোরি থাকলে ডিলিট
+        const existingStory = await prisma.story.findFirst({
+            where: {
+                userId: currentUser.id,
+            },
+        });
+
+        if (existingStory) {
+            await prisma.story.delete({
+                where: {
+                    id: existingStory.id,
+                },
+            });
+        }
+
+        // ✅ নতুন স্টোরি তৈরি
+        const createdStory = await prisma.story.create({
+            data: {
+                userId: currentUser.id, // ✅ MongoDB ObjectId
+                img,
+                expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+            },
+            include: {
+                user: true,
+            },
+        });
+
+        return createdStory;
+    } catch (err) {
+        console.error("[ADD_STORY_ERROR]", err);
+        throw new Error("Failed to add story");
+    }
+};
