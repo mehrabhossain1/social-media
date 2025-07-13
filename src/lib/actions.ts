@@ -281,3 +281,36 @@ export const switchLike = async (postId: string) => {
         throw new Error("Something went wrong while toggling like.");
     }
 };
+
+export const addComment = async (postId: string, desc: string) => {
+    const { userId: clerkUserId } = await auth();
+
+    if (!clerkUserId) throw new Error("User is not authenticated!");
+
+    // ✅ Find actual user from DB
+    const dbUser = await prisma.user.findUnique({
+        where: {
+            clerkId: clerkUserId,
+        },
+    });
+
+    if (!dbUser) throw new Error("User not found in database!");
+
+    try {
+        const createdComment = await prisma.comment.create({
+            data: {
+                desc,
+                userId: dbUser.id, // ✅ Correct MongoDB ObjectId
+                postId,
+            },
+            include: {
+                user: true,
+            },
+        });
+
+        return createdComment;
+    } catch (err) {
+        console.error("[ADD_COMMENT_ERROR]", err);
+        throw new Error("Something went wrong!");
+    }
+};
